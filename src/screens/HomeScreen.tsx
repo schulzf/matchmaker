@@ -3,6 +3,7 @@ import {SafeAreaView, StyleSheet, Text, View} from 'react-native';
 import CandidateCard from '../components/CandidateCard';
 import ExploreHeader from '../components/ExploreHeader';
 import LikeDislikeButtons from '../components/LikeDislikeButtons';
+import CandidateSelection from '../containers/CandidateSelection';
 import {globalStyles} from '../utils/globalStyles';
 
 interface HomeScreenProps {}
@@ -12,8 +13,7 @@ const HomeScreen: React.FC<HomeScreenProps> = () => {
     <SafeAreaView style={globalStyles.fullheight_bg_w}>
       <View style={styles.container}>
         <ExploreHeader />
-        <CandidateCard />
-        <LikeDislikeButtons />
+        <CandidateSelection />
       </View>
     </SafeAreaView>
   );
