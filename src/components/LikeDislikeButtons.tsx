@@ -1,5 +1,6 @@
 import React from 'react';
-import {StyleSheet, Text, View} from 'react-native';
+import {Pressable, StyleSheet, Text, View} from 'react-native';
+import {TouchableOpacity} from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 
 interface LikeDislikeButtonsProps {}
@@ -8,15 +9,21 @@ const LikeDislikeButtons: React.FC<LikeDislikeButtonsProps> = () => {
   return (
     <View style={styles.wrapper}>
       <View style={styles.container}>
-        <View style={styles.btn_regular}>
+        <TouchableOpacity
+          style={styles.btn_regular}
+          onPress={() => console.warn('DISLIKE')}>
           <Ionicons name="close" size={48} style={styles.dislike} />
-        </View>
-        <View style={styles.btn_small}>
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={styles.btn_small}
+          onPress={() => console.warn('SUPERLIKE')}>
           <Ionicons name="star" size={18} style={styles.superlike} />
-        </View>
-        <View style={styles.btn_regular}>
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={styles.btn_regular}
+          onPress={() => console.warn('LIKE')}>
           <Ionicons name="heart" size={48} style={styles.like} />
-        </View>
+        </TouchableOpacity>
       </View>
     </View>
   );
@@ -39,6 +46,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#FFFFFF',
   },
   btn_regular: {
+    zIndex: 10,
     width: 100,
     height: 100,
     borderRadius: 100,
