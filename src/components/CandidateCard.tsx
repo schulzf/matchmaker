@@ -1,4 +1,4 @@
-import React, {useCallback, useEffect, useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {Dimensions, StyleSheet, Text, View} from 'react-native';
 import {
   PanGestureHandler,
@@ -13,9 +13,20 @@ import Animated, {
 } from 'react-native-reanimated';
 import {globalStyles} from '../utils/globalStyles';
 
-interface CandidateCardProps {}
+export type Candidate = {
+  name: string;
+  age: number;
+};
 
-const CandidateCard: React.FC<CandidateCardProps> = () => {
+interface CandidateCardProps {
+  nextCandidate: () => void;
+  candidate: Candidate;
+}
+
+const CandidateCard: React.FC<CandidateCardProps> = ({
+  candidate,
+  nextCandidate,
+}) => {
   const [sentimentColor, setSentimentColor] = useState<
     '#FFF' | '#5abb8850' | '#de460a50'
   >('#FFF');
@@ -35,7 +46,7 @@ const CandidateCard: React.FC<CandidateCardProps> = () => {
         scale: 1 - Math.abs(translateX.value) / 1000,
       },
     ],
-    opacity: 1 - Math.abs(translateX.value) / 500,
+    opacity: 1 - Math.abs(translateX.value) / 2000,
   }));
 
   const like_threshold = screen_width / 2.4;
@@ -44,12 +55,7 @@ const CandidateCard: React.FC<CandidateCardProps> = () => {
   const panGesture = useAnimatedGestureHandler<PanGestureHandlerGestureEvent>({
     onActive: event => {
       translateX.value = event.translationX;
-      if (
-        event.translationX > dislike_threshold &&
-        event.translationX < like_threshold
-      ) {
-        runOnJS(setSentimentColor)('#FFF');
-      }
+
       if (event.translationX < dislike_threshold) {
         runOnJS(setSentimentColor)('#de460a50');
       }
@@ -58,20 +64,37 @@ const CandidateCard: React.FC<CandidateCardProps> = () => {
       }
     },
     onEnd: event => {
+      if (
+        event.translationX > dislike_threshold &&
+        event.translationX < like_threshold
+      ) {
+        translateX.value = withTiming(0, {duration: 600});
+        runOnJS(setSentimentColor)('#FFF');
+      }
       if (event.translationX < dislike_threshold) {
         console.warn('DISLIKE');
+        translateX.value = withTiming(
+          screen_width * Math.sign(event.translationX),
+          {duration: 600},
+        );
+        runOnJS(setSentimentColor)('#FFF');
+        runOnJS(nextCandidate)();
       }
       if (event.translationX > like_threshold) {
         console.warn('LIKE');
+        translateX.value = withTiming(
+          screen_width * Math.sign(event.translationX),
+          {duration: 600},
+        );
+        runOnJS(setSentimentColor)('#FFF');
+        runOnJS(nextCandidate)();
       }
-      translateX.value = withTiming(0);
-      runOnJS(setSentimentColor)('#FFF');
     },
   });
 
   useEffect(() => {
-    console.log(translateX.value);
-  }, [translateX.value]);
+    translateX.value = 0;
+  });
 
   return (
     <PanGestureHandler onGestureEvent={panGesture}>
@@ -80,8 +103,8 @@ const CandidateCard: React.FC<CandidateCardProps> = () => {
           style={[styles.card_container, {backgroundColor: sentimentColor}]}>
           <View style={styles.card_photo}></View>
           <View style={[globalStyles.mt2, globalStyles.p1]}>
-            <Text style={styles.text_candidate_name}>Name of Candidate</Text>
-            <Text style={styles.text_candidate_age}>26</Text>
+            <Text style={styles.text_candidate_name}>{candidate.name}</Text>
+            <Text style={styles.text_candidate_age}>{candidate.age}</Text>
           </View>
         </View>
       </Animated.View>
@@ -95,6 +118,8 @@ const styles = StyleSheet.create({
   wrapper: {
     padding: 10,
     height: '75%',
+    position: 'absolute',
+    width: '100%',
   },
   card_container: {
     width: '100%',
@@ -106,7 +131,7 @@ const styles = StyleSheet.create({
       width: 0,
       height: 3,
     },
-    shadowOpacity: 0.15,
+    shadowOpacity: 0.08,
     shadowRadius: 4.65,
 
     elevation: 6,

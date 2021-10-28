@@ -1,27 +1,39 @@
 import React from 'react';
-import {Pressable, StyleSheet, Text, View} from 'react-native';
-import {TouchableOpacity} from 'react-native';
+import {StyleSheet, TouchableOpacity, View} from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 
-interface LikeDislikeButtonsProps {}
+interface LikeDislikeButtonsProps {
+  nextCandidate: () => void;
+}
 
-const LikeDislikeButtons: React.FC<LikeDislikeButtonsProps> = () => {
+const LikeDislikeButtons: React.FC<LikeDislikeButtonsProps> = ({
+  nextCandidate,
+}) => {
   return (
     <View style={styles.wrapper}>
       <View style={styles.container}>
         <TouchableOpacity
           style={styles.btn_regular}
-          onPress={() => console.warn('DISLIKE')}>
+          onPress={() => {
+            nextCandidate();
+            console.warn('DISLIKE');
+          }}>
           <Ionicons name="close" size={48} style={styles.dislike} />
         </TouchableOpacity>
         <TouchableOpacity
           style={styles.btn_small}
-          onPress={() => console.warn('SUPERLIKE')}>
+          onPress={() => {
+            nextCandidate();
+            console.warn('SUPERLIKE');
+          }}>
           <Ionicons name="star" size={18} style={styles.superlike} />
         </TouchableOpacity>
         <TouchableOpacity
           style={styles.btn_regular}
-          onPress={() => console.warn('LIKE')}>
+          onPress={() => {
+            nextCandidate();
+            console.warn('LIKE');
+          }}>
           <Ionicons name="heart" size={48} style={styles.like} />
         </TouchableOpacity>
       </View>
@@ -36,6 +48,10 @@ const styles = StyleSheet.create({
     display: 'flex',
     alignItems: 'center',
     alignContent: 'center',
+    position: 'absolute',
+    bottom: 75,
+    left: 0,
+    right: 0,
   },
   container: {
     flex: 1,
@@ -43,7 +59,6 @@ const styles = StyleSheet.create({
     maxWidth: 300,
     flexDirection: 'row',
     justifyContent: 'space-evenly',
-    backgroundColor: '#FFFFFF',
   },
   btn_regular: {
     zIndex: 10,
