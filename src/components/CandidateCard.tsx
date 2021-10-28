@@ -49,12 +49,12 @@ const CandidateCard: React.FC<CandidateCardProps> = ({
     opacity: 1 - Math.abs(translateX.value) / 2000,
   }));
 
-  const like_threshold = screen_width / 2.4;
-  const dislike_threshold = (screen_width / 2.4) * -1;
+  const like_threshold = screen_width / 1.8;
+  const dislike_threshold = (screen_width / 1.8) * -1;
 
   const panGesture = useAnimatedGestureHandler<PanGestureHandlerGestureEvent>({
     onActive: event => {
-      translateX.value = event.translationX;
+      translateX.value = event.translationX * 0.8;
 
       if (event.translationX < dislike_threshold) {
         runOnJS(setSentimentColor)('#de460a50');
@@ -68,26 +68,31 @@ const CandidateCard: React.FC<CandidateCardProps> = ({
         event.translationX > dislike_threshold &&
         event.translationX < like_threshold
       ) {
-        translateX.value = withTiming(0, {duration: 600});
-        runOnJS(setSentimentColor)('#FFF');
+        translateX.value = withTiming(0, {duration: 600}, () => {
+          runOnJS(setSentimentColor)('#FFF');
+        });
       }
       if (event.translationX < dislike_threshold) {
         console.warn('DISLIKE');
         translateX.value = withTiming(
           screen_width * Math.sign(event.translationX),
-          {duration: 600},
+          {duration: 200},
+          () => {
+            runOnJS(nextCandidate)();
+            runOnJS(setSentimentColor)('#FFF');
+          },
         );
-        runOnJS(setSentimentColor)('#FFF');
-        runOnJS(nextCandidate)();
       }
       if (event.translationX > like_threshold) {
         console.warn('LIKE');
         translateX.value = withTiming(
           screen_width * Math.sign(event.translationX),
-          {duration: 600},
+          {duration: 200},
+          () => {
+            runOnJS(nextCandidate)();
+            runOnJS(setSentimentColor)('#FFF');
+          },
         );
-        runOnJS(setSentimentColor)('#FFF');
-        runOnJS(nextCandidate)();
       }
     },
   });
