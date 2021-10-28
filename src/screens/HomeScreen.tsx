@@ -1,8 +1,6 @@
 import React from 'react';
-import {SafeAreaView, StyleSheet, Text, View} from 'react-native';
-import CandidateCard from '../components/CandidateCard';
+import {SafeAreaView, StyleSheet, View} from 'react-native';
 import ExploreHeader from '../components/ExploreHeader';
-import LikeDislikeButtons from '../components/LikeDislikeButtons';
 import CandidateSelection from '../containers/CandidateSelection';
 import {globalStyles} from '../utils/globalStyles';
 
