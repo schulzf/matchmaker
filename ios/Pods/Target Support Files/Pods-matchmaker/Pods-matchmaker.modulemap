@@ -1,0 +1,6 @@
+module Pods_matchmaker {
+  umbrella header "Pods-matchmaker-umbrella.h"
+
+  export *
+  module * { export * }
+}
